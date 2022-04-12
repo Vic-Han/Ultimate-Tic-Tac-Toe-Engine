@@ -4,8 +4,7 @@ Victor Han
 March 21st, 2022
 */
 #include "game.h"
-
-
+// methods to get private values x and o
 unsigned short Mini_bit_board::get_x()
 {
 	return x;
@@ -14,7 +13,7 @@ unsigned short Mini_bit_board::get_o()
 {
 	return o;
 }
-
+// methods to check if either player has won, and to check each individually
 bool Mini_bit_board::get_win()
 {
 	return (o_win || x_win);
@@ -28,6 +27,7 @@ bool Mini_bit_board::get_o_win()
 	return o_win;
 }
 
+// makes the move on the local board
 void Mini_bit_board::move(uint_fast8_t pos, bool X)
 {
 	if(X)
@@ -36,14 +36,6 @@ void Mini_bit_board::move(uint_fast8_t pos, bool X)
 	else
 		o |= (1 << pos);
 }
-
-/*
-   0   1   2
-
-   3   4   5
-
-   6   7   8
-*/
 
 
 // functions for each winning combination, 8 in total
@@ -133,21 +125,27 @@ void Mini_bit_board::update_win_status(int pos, bool X)
 	
 }
 
+// method that calls the other methods to fully update the local board
 void Mini_bit_board::move_and_update(uint_fast8_t pos, bool X)
 {
 	move(pos,X);
 	update_win_status(X);
 	
 }
-
+// methods that checks all legal moves in a local board
+// only gives the position on the local board, excludes which local board is chosen
 std::vector<uint_fast8_t> Mini_bit_board::mini_move_list()
 {
 	// combines x and o to get the "occupied" spaces, then xor with a "full" int to get the empty spaces 
-	uint_fast8_t empty = (x|o) ^ 0x1ff;
+	
+	uint_fast16_t empty = (x|o) ^ 0x1ff;
+	// vector to store all moves
 	std::vector<uint_fast8_t> mini_movelist;
+	// loop through the empty spaces
 	for(int pos = 0; pos != 9; pos++)
 	{
-		if((empty >> pos) & 1)
+		// if bit n is true in empty, add this move to the vector
+		if(((empty >> pos) & 1) == 1)
 		{
 			mini_movelist.push_back(pos);
 		}

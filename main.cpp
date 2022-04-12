@@ -3,59 +3,70 @@ Victor Han
 March 21st, 2022
 */
 #include "game.h"
-
+// method to check if a certain value is in the vector
+// used to see if a move entered is in the legal move list
+bool move_legal(std::vector<uint_fast8_t> legal_moves,uint_fast8_t movetried)
+{
+	for(int c = 0; c != legal_moves.size(); c++)
+	{
+		if(legal_moves[c] == movetried)
+		{
+			return true;
+		}
+	}
+	return false;
+}
 int main()
 {
 	Ultimate_bit_board master_board;
 	
 	srand (time(NULL));
-	int input;
-	//std::vector<uint_fast8_t> a = master_board.move_list();
-	std::vector<uint_fast8_t> move_history;
-	//while(a.size()>0)
+	int input  = 0;
+	std::vector<uint_fast8_t> a = master_board.move_list();
+	while(a.size()>0)
 	{	
-
-		//int m = rand() % a.size();
-		//move_history.push_back(a[m]);
-		master_board.make_move(17);
 		
-		master_board.terminal_print();
-		
-		//a = master_board.move_list();
-		//if(a.size() == 0)
+		a = master_board.move_list();
+		if(a.size() == 0)
 		{
-			//break;
+			break;
 		} 
-
-		master_board.make_move(master_board.pick_move());
-		
-		master_board.terminal_print();
-		//a = master_board.move_list();
-		//if(a.size() == 0)
-		{
-			//break;
-		} 
-
-	}
-	/*
-	for(int c =0; c < move_history.size();c++)
-	{
-		std::cout << (int)move_history[c] << ",";
-	}
-	*/
-	/*
-	std::vector<uint_fast8_t> a ={102,99,53,84,67,52,66,32,2,34,39,117,81,22,101,85,87,116,65,17,21,82,33,18,37,86,103,119,115,51,54,96,0,1,20,69,97,23,114,36,71,118,100,70,70,71,112,3,55,113,19,49,37,50,38,39,71,33,129,1,65,53,7,67,5,4,64,6,134,135,129,3,4,133,132,7,131,131,130};
-	for(int board_num = 0; board_num != a.size(); ++board_num)
-	{
-		master_board.make_move(a[board_num]);
-		
-	}
+		uint_fast8_t move = pick_move(master_board);
+		master_board.make_move(move);
 	
-	master_board.terminal_print();
-	std::cout << master_board.get_next_board() << master_board.o_win() << master_board.x_win();
-	a = master_board.move_list();
-	std::cout << a.size();
-	*/
-	//master_board.terminal_print();
+		
+		uint_fast8_t user_move = (uint_fast8_t)10;
+		move_legal(a,user_move);
+		while(!move_legal(a,user_move))
+		{
+			system("CLS");
+			master_board.terminal_print();
+			std::cout << "Which board? " << master_board.get_next_board();
+			std::cin >> input;
+			while(!std::cin >> input)
+			{
+				std::cout << "Enter a number you idiot";
+				std::cin >> input;
+			}
+			user_move = (input << 4);
+			std::cout << "Which spot? ";
+			std::cin >> input;
+			while(!std::cin >> input)
+			{
+				std::cout << "Enter a number";
+				std::cin >> input;
+			}
+			user_move |= input;
+			
+			
+			
+			
+		}
+
+		master_board.make_move(user_move);
+		//system("CLS");
+		//master_board.terminal_print();
+	}
+	std::cout << master_board.x_win() << " " << master_board.o_win();
 	return 0;
 }

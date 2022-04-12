@@ -5,6 +5,7 @@
 /*
 Victor Han
 March 21st, 2022
+file containing all the definitions for the methods in the ultimate board class
 */
 #include "game.h"
 
@@ -89,69 +90,70 @@ bool Ultimate_bit_board::o_win(){
 }
 
 
-
+// method to make the move on the main board
 void Ultimate_bit_board::make_move(uint_fast8_t move)
 {
+	// the four least significant bits(move & 0xf) represent where on the local board the piece will be placed
+	// the 5th-8th least significant bits(move >> 4) represnt which local board to place the piece
+	// bits 9-16 are not used
 	main_board[move >> 4].move_and_update((move & 0xf),X_move);
+	// switch whose move is it
 	X_move = !X_move;
+	// if either player wins the main board, the game is over
 	if(x_win() || o_win())
 	{
-		next_board = -2;
+		next_board = NOWHERE;
 	}
+	// if the next board is occupied by either player, the next move can be placed on any board
 	else if(main_board[move&0xf].get_win())
-		next_board = -1;
+		next_board = ANYWHERE;
+	// the next board is not yet occupied, so the next move must be placed there
 	else
 		next_board = (move&0xf);
 	
 }
+// method to get all legal moves
 std::vector<uint_fast8_t> Ultimate_bit_board::move_list()
 {
-	// the four least significant bits represent where on the sub board to place the move
-	// the 5-8th least significant bits represent which sub board to place the move
+	// the four least significant bits represent where on the local board to place the move
+	// the 5-8th least significant bits represent which local board to place the move
 	std::vector<uint_fast8_t> main_move_list;
 	
-	// moves can only be placed on one sub board
-	if(next_board >= 0)
+	// moves can only be placed on one local board
+	if(next_board > ANYWHERE)
 	{
+		// gets the moves, but only the location on the local board, not the local board itself
 		main_move_list = main_board[next_board].mini_move_list();
+		// add the local board to each element by shifting the number of the board to the 5th-8th bits
 		for(int index = 0; index != main_move_list.size(); ++index)
 		{
 			main_move_list[index] |= (next_board << 4);
 		}
 	}
 	
-	// moves can be placed on any sub board
-	else if(next_board == -1)
+	// moves can be placed on any local board
+	else if(next_board == ANYWHERE)
 	{
+		// iterate through every board
 		for(int board_num = 0; board_num != 9; ++board_num)
 		{
-			// sub board is already occupied, so cannot place moves here
+			// local board is already occupied, so cannot place moves here
 			if(main_board[board_num].get_win())
 			{
 				continue;
 			}
-			
-			std::vector<uint_fast8_t> temp_vec = main_board[next_board].mini_move_list();
+			// get the moves on the local board, but with the position of the local board itself
+			std::vector<uint_fast8_t> temp_vec = main_board[board_num].mini_move_list();
+			// add the local board to each element by shifting the number of the board to the 5th-8th bits, then add to main vector
 			for(int index = 0; index != temp_vec.size(); ++index)
 			{
 				main_move_list.push_back( temp_vec[index] | (board_num << 4) );
-				std::vector<int> retard;
-				for(int x = 0; x < main_move_list.size(); x++)
-				{
-					retard.push_back(main_move_list[x]);
-				}
-				for(int x = 0; x < main_move_list.size(); x++)
-				{
-					std::cout << retard[x] << " ";
-				}
 			}
 		}
 	}
-	
-	
 	return main_move_list;
 }
-
+// method to print board to terminal
 void Ultimate_bit_board::terminal_print()
 {
 	
@@ -174,7 +176,7 @@ void Ultimate_bit_board::terminal_print()
 					else if(((current_x >> local_column) & 1) == 1)
 							std::cout << " X ";
 					else
-						std::cout << " E ";
+						std::cout << " - ";
 				}
 			
 				std::cout << "  ";
@@ -212,7 +214,5 @@ void test_print(Mini_bit_board a)
 		}
 		std::cout << std::endl;
 	}	
-	if(a.x_win)
-		std::cout << "X wins";
 }
 
