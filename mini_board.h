@@ -6,9 +6,8 @@ header file with definition for local board class and delcarations for its metho
 #ifndef MINI_H
 #define MINI_H
 
-
 #include <iostream>
-#include <vector>
+//#include <vector>
 #include <stdio.h>      
 #include <stdlib.h>     
 #include <time.h> 
@@ -60,8 +59,8 @@ class Mini_bit_board
 	void move_and_update(uint_fast8_t pos, bool X);
 	
 	// function that returns a vector of moves in the sub board
-	std::vector<uint_fast8_t> mini_move_list();
-	
+	//std::vector<uint_fast8_t> mini_move_list();
+	void mini_move_list(uint_fast8_t *, uint_fast8_t &);
 	
 	// default constructor
 	Mini_bit_board()
@@ -71,6 +70,9 @@ class Mini_bit_board
 		x_win = 0;
 		o_win = 0;
 	}
+	//Mini_bit_board(std::vector<int>);
+	Mini_bit_board(uint_fast8_t *);
+	Mini_bit_board(const uint_fast16_t&,const uint_fast16_t&,const bool,const bool);
 	// testing function to print only one board
 	friend void test_print(Mini_bit_board a);
 };

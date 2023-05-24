@@ -37,7 +37,7 @@ March 20th, 2022
 
 // the total number of iterations that the monte carlo tree search does
 // this specific constant takes 2-5 seconds when used 
-#define MAX_ITERATIONS 200000	
+#define MAX_ITERATIONS 250000	
 	
 	
 int score_of_iteration(Ultimate_bit_board test_state);

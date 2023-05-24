@@ -81,14 +81,13 @@ bool Ultimate_bit_board::bottom_left_diagnol(bool X)
 // updates the win status of the class by calling the methods for each possible winning combination
 bool Ultimate_bit_board::x_win()
 {
-	return ( left_vertical(true) || middle_vertical(true) ||  right_vertical(true) || bottom_horizontal(true) || middle_horizontal(true) || top_horizontal(true) || bottom_left_diagnol(true) || top_left_diagnol(true) );
+	return (left_vertical(true) || middle_vertical(true) ||  right_vertical(true) || bottom_horizontal(true) || middle_horizontal(true) || top_horizontal(true) || bottom_left_diagnol(true) || top_left_diagnol(true) );
 	
 }	
 bool Ultimate_bit_board::o_win(){
 	
-	return ( left_vertical(false) || middle_vertical(false) ||  right_vertical(false) || bottom_horizontal(false) || middle_horizontal(false) || top_horizontal(false) || bottom_left_diagnol(false) || top_left_diagnol(false) );
+	return (left_vertical(false) || middle_vertical(false) ||  right_vertical(false) || bottom_horizontal(false) || middle_horizontal(false) || top_horizontal(false) || bottom_left_diagnol(false) || top_left_diagnol(false) );
 }
-
 
 // method to make the move on the main board
 void Ultimate_bit_board::make_move(uint_fast8_t move)
@@ -106,13 +105,17 @@ void Ultimate_bit_board::make_move(uint_fast8_t move)
 	}
 	// if the next board is occupied by either player, the next move can be placed on any board
 	else if(main_board[move&0xf].get_win())
+	{
 		next_board = ANYWHERE;
+	}
 	// the next board is not yet occupied, so the next move must be placed there
 	else
+	{
 		next_board = (move&0xf);
-	
+	}
 }
 // method to get all legal moves
+/*
 std::vector<uint_fast8_t> Ultimate_bit_board::move_list()
 {
 	// the four least significant bits represent where on the local board to place the move
@@ -152,8 +155,48 @@ std::vector<uint_fast8_t> Ultimate_bit_board::move_list()
 		}
 	}
 	return main_move_list;
+}*/
+void Ultimate_bit_board::move_list(uint_fast8_t *main_move_list, uint_fast8_t & size)
+{
+	// the four least significant bits represent where on the local board to place the move
+	// the 5-8th least significant bits represent which local board to place the move
+	// moves can only be placed on one local board
+	if(next_board > ANYWHERE)
+	{
+		// gets the moves, but only the location on the local board, not the local board itself
+		main_board[next_board].mini_move_list(main_move_list, size);
+		// add the local board to each element by shifting the number of the board to the 5th-8th bits
+		for(int index = 0; index != size; ++index)
+		{
+			main_move_list[index] |= (next_board << 4);
+		}
+	}
+	
+	// moves can be placed on any local board
+	else if(next_board == ANYWHERE)
+	{
+		// iterate through every board
+		for(int board_num = 0; board_num != 9; ++board_num)
+		{
+			// local board is already occupied, so cannot place moves here
+			if(main_board[board_num].get_win())
+			{
+				continue;
+			}
+			// get the moves on the local board, but with the position of the local board itself
+			uint_fast8_t size_bef = size;
+			main_board[board_num].mini_move_list(main_move_list, size);
+			// add the local board to each element by shifting the number of the board to the 5th-8th bits, then add to main vector
+			for(int index = size_bef; index != size; ++index)
+			{
+				main_move_list[index] |= (board_num << 4);
+			}
+			
+		}
+	}
 }
 // method to print board to terminal
+/*
 void Ultimate_bit_board::terminal_print()
 {
 	
@@ -190,29 +233,49 @@ void Ultimate_bit_board::terminal_print()
 	
 	
 	
-}
+}*/
 
-
-void test_print(Mini_bit_board a)
+Ultimate_bit_board::Ultimate_bit_board(int *gameinfo)
 {
-	unsigned short temp_x = a.x;
-	unsigned short temp_o = a.o;
-	for(int hor = 0; hor != 3; hor++)
+	next_board = gameinfo[0];
+	if(gameinfo[1] == 1)
 	{
-		for(int vert = 0; vert != 3; vert++)
+		X_move = true;
+	}
+	else
+	{
+		X_move = false;
+	}
+	
+	for(int outer = 0; outer < 9; outer++)
+	{
+		uint_fast8_t temp[9];
+		for(int inner = 0; inner <  9; inner++ )
 		{
-			if( (temp_o & 1) == 1)
-				std::cout << " O ";
-			else if((temp_x & 1) == 1)
-				std::cout << " X ";
-			else
-				std::cout << " E ";
-			
-			
-			temp_x = temp_x >> 1;
-			temp_o = temp_o >> 1;
+			temp[inner] = gameinfo[(outer * 9) + inner + 2];
 		}
-		std::cout << std::endl;
-	}	
+
+		main_board[outer] = Mini_bit_board(temp);
+	}
+
+}
+void Ultimate_bit_board::get_fields(uint_fast16_t * board_contents, bool *win_contents, short *nextBoard)
+{
+	*nextBoard = next_board;
+	for(int x = 0; x < 9; x ++)
+	{
+		board_contents[x] = main_board[x].get_x();
+		board_contents[x+9] = main_board[x].get_o();
+		win_contents[x] = main_board[x].get_x_win();
+		win_contents[x+9] = main_board[x].get_o_win();
+	}
+}
+Ultimate_bit_board::Ultimate_bit_board(const uint_fast16_t *board_contents,const bool *win_contents, const short &nextBoard)
+{
+	next_board = nextBoard;
+	for(int x = 0; x < 9; x++)
+	{
+		main_board[x] = Mini_bit_board(board_contents[x],board_contents[x+9],win_contents[x],win_contents[x+9]);
+	}
 }
 

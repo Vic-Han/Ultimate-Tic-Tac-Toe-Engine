@@ -50,13 +50,16 @@ class Ultimate_bit_board
 		for(int x = 0; x != 9; x++)
 			main_board[x] = Mini_bit_board();
 	}
-	
+
+	Ultimate_bit_board(int* gameinfo);
+	Ultimate_bit_board(const uint_fast16_t *,const bool*,const short&);
 	
 	// function that puts moves into an array and returns the number of legal moves found
-	std::vector<uint_fast8_t> move_list();
+	//std::vector<uint_fast8_t> move_list();
+	void move_list(uint_fast8_t *, uint_fast8_t &);
 	// function to make the move and update other members of the board
 	void make_move(uint_fast8_t move);
-	
+	void get_fields(uint_fast16_t*,bool*, short*);
 	
 	
 	// methods to check if either player has won
@@ -65,11 +68,13 @@ class Ultimate_bit_board
 	
 	// method to print the board to he terminal
 	void terminal_print();
-	
+	uint_fast8_t pick_move();
+	int score_of_iteration();
+
 	
 };
 
-uint_fast8_t pick_move(Ultimate_bit_board game_state);
-int score_of_iteration(Ultimate_bit_board test_state);
+//uint_fast8_t pick_move(Ultimate_bit_board game_state);
+//int score_of_iteration(Ultimate_bit_board test_state);
 
 #endif
