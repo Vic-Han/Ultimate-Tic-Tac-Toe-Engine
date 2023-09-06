@@ -113,6 +113,7 @@ void Ultimate_bit_board::make_move(uint_fast8_t move)
 	{
 		next_board = (move&0xf);
 	}
+	move_number++;
 }
 // method to get all legal moves
 /*
@@ -237,6 +238,7 @@ void Ultimate_bit_board::terminal_print()
 
 Ultimate_bit_board::Ultimate_bit_board(int *gameinfo)
 {
+	move_number = 0;
 	next_board = gameinfo[0];
 	if(gameinfo[1] == 1)
 	{
@@ -259,9 +261,14 @@ Ultimate_bit_board::Ultimate_bit_board(int *gameinfo)
 	}
 
 }
-void Ultimate_bit_board::get_fields(uint_fast16_t * board_contents, bool *win_contents, short *nextBoard)
-{
-	*nextBoard = next_board;
+void Ultimate_bit_board::simulate_game(uint_fast8_t *movelist, int list_size){
+	for(int move_num = 0; move_num < list_size; move_num++){
+		make_move(movelist[move_num]);
+	}
+
+}
+void Ultimate_bit_board::get_fields(uint_fast16_t * board_contents, bool *win_contents)
+{	
 	for(int x = 0; x < 9; x ++)
 	{
 		board_contents[x] = main_board[x].get_x();
@@ -270,8 +277,10 @@ void Ultimate_bit_board::get_fields(uint_fast16_t * board_contents, bool *win_co
 		win_contents[x+9] = main_board[x].get_o_win();
 	}
 }
-Ultimate_bit_board::Ultimate_bit_board(const uint_fast16_t *board_contents,const bool *win_contents, const short &nextBoard)
+Ultimate_bit_board::Ultimate_bit_board(const uint_fast16_t *board_contents,const bool *win_contents, const short &nextBoard, const short &moveNumber, const bool xMove)
 {
+	X_move = xMove;
+	move_number = moveNumber;
 	next_board = nextBoard;
 	for(int x = 0; x < 9; x++)
 	{

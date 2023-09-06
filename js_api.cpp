@@ -4,56 +4,48 @@
 
 
 EMSCRIPTEN_KEEPALIVE
-int subtract(int x, int y) {
-  return x - y;
-}
-
-
-
-
-EMSCRIPTEN_KEEPALIVE
-int bestMove(int* gameinfo)
+int bestMoveState(int* gameinfo)
 {
     int result = 0;
+    srand(42);
     Ultimate_bit_board gameinstance = Ultimate_bit_board(gameinfo);
-
-    uint_fast8_t best_move = gameinstance.pick_move();
+    uint_fast8_t best_move = gameinstance.pick_move();  
     result += ((best_move >> 4) * 9 + (best_move&0xf));
     return result;
 }
+EMSCRIPTEN_KEEPALIVE
+int bestMoveList(int *moveList, int listSize){
+  int result = 0;
+  srand(42);
+  uint_fast8_t copyMoveList[81];
+  for(int index = 0; index < listSize; index++){
+    copyMoveList[index] = (uint_fast8_t)( ((moveList[index]/9) << 4) + (moveList[index]%9));
+  }
+  Ultimate_bit_board current_game = Ultimate_bit_board();
+  current_game.simulate_game(copyMoveList, listSize);
+  uint_fast8_t best_move = current_game.pick_move();  
+  result += ((best_move >> 4) * 9 + (best_move&0xf));
+  return result;
+}
 /*
+void test1(){
+   int gameInfo[83] = {8, 2, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 2, 2, 0, 1, 0, 0, 0, 1, 0, 1, 2, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 2, 0, 0, 2, 1, 0, 2, 0, 0, 0, 0, 2, 0, 2, 2, 1, 0, 2, 2, 0, 0, 0, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 2, 0, 0, 0, 1, 0, 2, 0, 1, 1};
+    std::cout << bestMove(gameInfo);
+}
+void test2(){
+  int gameInfo[83] = {6, 2, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 2, 2, 0, 1, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 2, 1, 0, 2, 0, 0, 0, 0, 2, 0, 2, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0, 1};
+  std::cout << bestMove(gameInfo);
+}
+void test3(){
+   int gameInfo[83] = {1, 2, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 2, 0, 0, 1, 0, 0, 0, 0, 0, 1, 2, 0, 1, 
+   0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 2, 1, 0, 2, 0, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 
+   0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    std::cout << bestMove(gameInfo);
+}
+
 int main(){
      
-
-    int gameInfo[83];
-    for( int x = 2; x< 83; x++)
-    {
-      gameInfo[x] = 0;
-    }
-    gameInfo[0] = -1;
-    gameInfo[1] = 2;
-    gameInfo[40 + 2] = 1;
-    gameInfo[4 + 2] = 1;
-    gameInfo[13 + 2] = 1;
-    gameInfo[22 + 2] = 1;
-    gameInfo[8 + 2] = 1;
-    gameInfo[1 + 2] = 1;
-    gameInfo[7 + 2] = 1;
-    gameInfo[76 + 2] = 1;
-    gameInfo[36 + 2] = 2;
-    gameInfo[37 + 2] = 2;
-    gameInfo[38 + 2] = 2;
-    gameInfo[0 + 2] = 2;
-    gameInfo[72 + 2] = 2;
-    gameInfo[9 + 2] = 2;
-    gameInfo[63 + 2] = 2;
-    Ultimate_bit_board gameinstance = Ultimate_bit_board(gameInfo);
-    //uint_fast8_t list[81];
-    //uint8_t list_size = 0;
-    //gameinstance.move_list(list,list_size);
-    //std::cout << (int)list_size;
-    //uint_fast8_t best_move = gameinstance.pick_move();
-    //int result = ((best_move >> 4) * 9 + (best_move&0xf));
-    std::cout << bestMove(gameInfo);
+    test1();
+   
     return 0;
 }*/

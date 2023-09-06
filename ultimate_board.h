@@ -11,6 +11,7 @@ Header file containing definition for the main board class and declarations for 
 class Ultimate_bit_board
 {
 	private:
+	short move_number;
 	// array of smaller boards to make the main game
 	Mini_bit_board main_board [9];
 	// bool to keep track of whose move it is 
@@ -45,6 +46,7 @@ class Ultimate_bit_board
 	// default constructor 
 	Ultimate_bit_board()
 	{
+		move_number = 1;
 		X_move = true;
 		next_board = -1;
 		for(int x = 0; x != 9; x++)
@@ -52,14 +54,14 @@ class Ultimate_bit_board
 	}
 
 	Ultimate_bit_board(int* gameinfo);
-	Ultimate_bit_board(const uint_fast16_t *,const bool*,const short&);
-	
+	Ultimate_bit_board(const uint_fast16_t *,const bool*,const short&, const short &,const bool);
+	void simulate_game(uint_fast8_t *movelist, int list_size);
 	// function that puts moves into an array and returns the number of legal moves found
 	//std::vector<uint_fast8_t> move_list();
 	void move_list(uint_fast8_t *, uint_fast8_t &);
 	// function to make the move and update other members of the board
 	void make_move(uint_fast8_t move);
-	void get_fields(uint_fast16_t*,bool*, short*);
+	void get_fields(uint_fast16_t*,bool*);
 	
 	
 	// methods to check if either player has won
@@ -70,7 +72,9 @@ class Ultimate_bit_board
 	void terminal_print();
 	uint_fast8_t pick_move();
 	int score_of_iteration();
-
+	int evaluate_random(const int &);
+	int alpha_beta_search(int , int ,const int &,const int &);
+	uint_fast8_t top_level_alpha_beta(const int&, const int&);
 	
 };
 
