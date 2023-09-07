@@ -1,29 +1,34 @@
-var exports;
-var memory;
-let best;
-let wasmMemory = new WebAssembly.Memory({initial: 256, maximum: 512});
-WebAssembly.instantiateStreaming(
-    fetch("js_api.wasm"), {
-        js: {
-            mem: wasmMemory
-        }
-    }
-).then(results => {
-    exports = results.instance.exports;
-    memory = results.instance.exports.memory;
-    best = results.instance.exports._Z12bestMoveListPii;
-}).catch(error => {
-    console.log("Wasm corrupted/doesn't exist", error);
-});
-
-
-
+const worker = new Worker('worker.js')
+worker.postMessage({action:"fetchWebAssembly"});
+worker.onmessage = event => {
+	if(event.data.message === "Successfully saved Wasm"){
+		console.log("Wasm saved!")
+	}
+	if(event.data.message === "Failed to Save Wasm"){
+		console.log(event.data.error)
+	}
+	if(event.data.message == "Move Found"){
+		if(moveListLength === 0){
+			return;
+		}
+		const move = event.data.move;
+		document.getElementById("output").textContent = "Your Turn!";
+		play_move(move, 'O');
+		
+		set_buttons();
+		gameInfo[1] = 1;
+	}
+}
 let winStatus = new Int16Array(9);
 var gameInfo = new Int32Array(83);
 var moveList = new Int32Array(81);
 var moveListLength = 0;
 function setupArray()
 {
+	winStatus = new Int16Array(9);
+	gameInfo = new Int32Array(83);
+	moveList = new Int32Array(81);
+	moveListLength = 0;
 	// next board variable in the c++ program
 	gameInfo[0] = -1;
 	// x turn
@@ -43,18 +48,7 @@ function convert(value)
 	if(value === 'X'){return 1}
 	return 2;
 }
-async function runWasm()
-{
-    var myArray = new Int32Array(memory.buffer)
-	for(let a = 0; a < moveListLength; a++)
-	{
-		myArray[a] = moveList[a];
-	}
-	//console.log(gameInfo[0]);
-	const move = best(0,moveListLength);
-	console.log(move);
-    return move;
-}
+
 function setupTable(TableId)
 {
 	var mainTable = document.getElementById(TableId);
@@ -112,20 +106,14 @@ function try_move(moveNum) {
 	gameInfo[1] = 2;
 	if(gameInfo[0] === -1 || Math.floor(moveNum / 9) === gameInfo[0])
 	{
-		
+		document.getElementById("output").textContent = " Thinking....";
 		play_move(moveNum, 'X');
 		//console.log([...Array.from(gameInfo)])
 		//console.log([...Array.from(moveList)])
-		document.getElementById("output").textContent = " Thinking....";
+		removeButtons();
+		
 		console.log(winStatus)
-		runWasm().then(move => {
-			play_move(move, 'O');
-			document.getElementById("output").textContent = "Your Turn!";
-			set_buttons();
-			gameInfo[1] = 1;
-		});
-		  
-
+		worker.postMessage({action: "computeMove" , moveList: moveList, listSize: moveListLength})
 	}
 	else
 	{
@@ -149,11 +137,9 @@ function play_move(num, value)
 		winStatus[Math.floor(num/9)] = convert(value);
 		if(totalWin(value))
 		{
-			console.log("WHY??")
 			gameInfo[0] = -2;
-			document.getElementById("output").textContent = "Illegal Move!";
-			//document.getElementById("output").textContent = (value + " Wins!");
-			console.log(document.getElementById("output").textContent = (value + " Wins!"))
+		
+			document.getElementById("output").textContent = (value + " Wins!");
 
 		}	
 	}
@@ -194,7 +180,6 @@ function totalWin(value)
 	if(winStatus[2] === target && winStatus[5] === target && winStatus[8] === target){return true}
 	if(winStatus[0] === target && winStatus[4] === target && winStatus[8] === target){return true}
 	if(winStatus[6] === target && winStatus[4] === target && winStatus[2] === target){return true}
-	console.log("fuck")
 	return false;
 }
 function set_buttons()
@@ -204,7 +189,7 @@ function set_buttons()
 		for(let square = board * 9; (square < (board+1) * 9) && winStatus[board] > 2; square++)
 		document.getElementById(squareID(square)).querySelectorAll("button").forEach((button) =>
 			{
-				if(Math.floor(square /9 ) === gameInfo[0] || gameInfo[0] === -1)
+				if(gameInfo[0] !== -2 && (Math.floor(square /9 ) === gameInfo[0] || gameInfo[0] === -1))
 				{
 					button.classList.add("valid_button");
 				}
@@ -226,11 +211,16 @@ function removeButtons()
 			})
 	}
 }
-setupArray();
+function startNewGame(){
+	document.getElementById("main board").innerHTML = "";
+	document.getElementById("output").textContent = "Your Turn!";
+	setupArray();
 
-setupTable("main board");
-set_buttons()
-
+	setupTable("main board");
+	set_buttons()
+}
+startNewGame();
+/*
 play_move(9,'O');
 play_move(10,'O');
 play_move(11,'O');
@@ -238,4 +228,4 @@ play_move(36,'O');
 play_move(37,'O');
 play_move(38,'O');
 play_move(70, 'O');
-play_move(69, 'O');
+play_move(69, 'O');*/

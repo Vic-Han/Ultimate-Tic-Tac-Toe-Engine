@@ -6,7 +6,9 @@
 EMSCRIPTEN_KEEPALIVE
 int bestMoveState(int* gameinfo)
 {
+  
     int result = 0;
+    
     srand(42);
     Ultimate_bit_board gameinstance = Ultimate_bit_board(gameinfo);
     uint_fast8_t best_move = gameinstance.pick_move();  
@@ -16,6 +18,7 @@ int bestMoveState(int* gameinfo)
 EMSCRIPTEN_KEEPALIVE
 int bestMoveList(int *moveList, int listSize){
   int result = 0;
+  
   srand(42);
   uint_fast8_t copyMoveList[81];
   for(int index = 0; index < listSize; index++){

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="uttt.css">
+    <script src="SetupScript.js" defer>
+    </script>
+    
+</head>
+<body>
+    <div class = page_container>
+        <div class = "instructions"> 
+            <h3 align = "center">How to Play</h3>
+            <div class="basic_text">
+                I wrote the UI and the game logic using JavaScript. The backend was written in C++, and compiled to Web Assembly using Emscripten.
+            </div>
+            <div class = basic_text >
+            Ultimate Tic Tac Toe is a game with a similar goal to the regular game. 
+            To win, a player must conquer three of the sub boards to make a row column or diagnol. 
+            The sub boards themselves must be won by traditional tic tac toe rules.   
+            </div>
+            <div class = basic_text>
+            Players must play on the board corresponding to the last players move on the sub board 
+            i.e. if player X played on the top left square of any board, player O must play on the top left board. 
+            If a player is sent to a board that is already controlled, they may play on any available board.
+            </div>
+            <div class = button_container>
+                <h4 id= "startGameButton" onclick ="startNewGame()"> Start New Game!  </h4>
+                <!--<a href = "../index.html"> <h4 id = "backButton"> Back </h4> <a>-->
+            </div>
+        </div>
+        <div class = main_contents>
+            <h3 id = "output" align = "center" > Your Turn!</h3>
+            
+            <div class = main_board id = "main board" align = "center"></div>
+        </div>
+        <div class = engine_details>
+            <h3 align = "center"> About the AI</h3>
+            <div class = basic_text>
+                A weak upper bound for the number of possible games is 81 factorial, 
+                as that would include every combination of filling in every square in every order. 
+                This is much less complex than chess, but it is still not possible to brute force.
+            </div>
+            <div class = basic_text>
+                We can't search indefinitely like we can in the simple counterpart. 
+                Traditional chess engines use a heuristic to estimate the rough value of a position, 
+                but developing an accurate heuristic for Ultimate Tic Tac Toe is not easy. 
+            </div>
+            <div class = basic_text>
+                Monte Carlo Tree Search uses random sampling instead of a heuristic. 
+                It simulates X amount of random games from that state. 
+                If the player wins more than they lose, we can assume that the state is good for that player. 
+                With enough simualations we should theoritically approach an object value. 
+            </div>
+        </div>
+    </div>
+    
+</body>
+
+
+    
+   
+
+</html>
