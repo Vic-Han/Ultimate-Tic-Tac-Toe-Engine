@@ -5,25 +5,23 @@
 }
 
 .page_container{
-	width: 100%;
-	height: 100%;
-
+	position: relative;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 1600px;
+	display: flex;
+	flex-direction: row;
 }
 
 .instructions{
-	position: absolute;
-	top: 10%;
-	left: 5%;
-	width: 23%;
-	background-color: #fff;
-}
-.h3{
 	position: relative;
+	width: 30%;
 }
+
 .basic_text{
 	font-family:'Times New Roman', Times, serif ;
 	font-weight: normal;
-	margin-top: 8vh;
+	margin-top: 80px;
 	text-align: center;
 }
 .button_container{
@@ -34,58 +32,52 @@
 
 }
 .engine_details{
-	position: absolute;
-	top: 10%;
-	right: 5%;
-	width: 23%;
-	background-color: fff;
+	position: relative;
+	width: 30%;
 }
 .main_contents{
+	
 	width:100%;
-	height: 100%;
+	position: relative;
 }
 .main_board{
-	position: absolute;
-	top: 50%;
-  	left: 50%;
-  	transform: translate(-50%, -50%);
+	position: relative;
+	width: 70%;
+	left: 50%;
+	transform: translateX(-50%);
 	display: grid;
-	grid-template-columns: 30vh 30vh 30vh;
+	grid-template-columns: 30% 30% 30%;
 	padding: 10px;
-	justify-items: center; /* Aligns items horizontally to the center */
-  	align-items: center;
 }
 .main_board_component{
 
     font-size: 30px;
     text-align: center;
-	margin-top: 1vh;
-	margin-left: 1vh;
-	margin-bottom: 1vh;
-	margin-right: 1vh;
-	height: calc(8* var(--half_line_density) + 3 * var(--square_size));
-	width: calc(8* var(--half_line_density) + 3 * var(--square_size));
+	margin: 10px;
+	width: 100%;
+	aspect-ratio: 1/1;
+
 }
 .sub_board{
+	width: 100%;
+	aspect-ratio: 1/1;
 	display: grid;
-	grid-template-columns: auto auto auto;
+	grid-template-columns: 30% 30% 30%;
 	/*background-color: #2196F3;*/
 	background-color: #000;
-	height: calc(8* var(--half_line_density) + 3 * var(--square_size));
-	width: calc(8* var(--half_line_density) + 3 * var(--square_size));
 	padding: var(--half_line_density);
 }
 .square{
     margin: var(--half_line_density);
 	
-	height: 7vh;
-	width: 7vh;
+	width: 100%;
+	aspect-ratio: 1/1;
     text-align: center;
 }
 .filled_board{
 	position: relative;
-	height: calc(8* var(--half_line_density) + 3 * var(--square_size));
-	width: calc(8* var(--half_line_density) + 3 * var(--square_size));
+	width: 100%;
+	aspect-ratio: 1/1;
 	margin:0;
 	font-size: calc(8* var(--half_line_density) + 3 * var(--square_size));
 	line-height: 1;
@@ -93,26 +85,17 @@
 }
 .filled_cell{
 	position: relative;
-	height: var(--square_size);
-	width: var(--square_size);
-	top: 0.1vh;
-	left: 0.1vh;
-	bottom: 0.1vh;
-	right: 0.1vh;
-	font-size: 6vh;
-	margin:0;
+	width: 100%;
+	aspect-ratio: 1/1;
+	font-size: 40px;
+	padding:0px;
 	background-color: #ffffff;
 }
 .empty_cell
 {
-	top: 0.1vh;
-	left: 0.1vh;
-	bottom: 0.1vh;
-	right: 0.1vh;
-
 	background-color: #ffffff;
-	height: var(--square_size);
-	width: var(--square_size);
+	width: 100%;
+	aspect-ratio: 1/1;
 }
 .button{
 	margin: 0;

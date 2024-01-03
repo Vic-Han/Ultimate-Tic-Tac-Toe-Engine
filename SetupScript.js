@@ -108,8 +108,6 @@ function try_move(moveNum) {
 	{
 		document.getElementById("output").textContent = " Thinking....";
 		play_move(moveNum, 'X');
-		//console.log([...Array.from(gameInfo)])
-		//console.log([...Array.from(moveList)])
 		removeButtons();
 		
 		console.log(winStatus)
@@ -220,12 +218,3 @@ function startNewGame(){
 	set_buttons()
 }
 startNewGame();
-/*
-play_move(9,'O');
-play_move(10,'O');
-play_move(11,'O');
-play_move(36,'O');
-play_move(37,'O');
-play_move(38,'O');
-play_move(70, 'O');
-play_move(69, 'O');*/
