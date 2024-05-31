@@ -58,16 +58,13 @@ function setupTable(TableId)
 	}
 	
 }
-function filled_cell_html(value)
-{
-	return `<p class = "filled_cell" >` + value + `</p>`
-
-}
-function empty_cell_html(num)
-{
-	return `<button class = "empty_cell" onclick = "try_move(` + num + `)">  </button>`
-
-}
+function empty_cell_html(num) {
+	return `<div class="empty_cell" onclick="try_move(${num})"></div>`;
+  }
+  
+  function filled_cell_html(value) {
+	return `<div class="filled_cell">${value}</div>`;
+  }
 function mini_board_html(num)
 {
 	let empty_cells = "";
@@ -185,7 +182,7 @@ function set_buttons()
 	for(let board = 0; board < 9; board++)
 	{
 		for(let square = board * 9; (square < (board+1) * 9) && winStatus[board] > 2; square++)
-		document.getElementById(squareID(square)).querySelectorAll("button").forEach((button) =>
+		document.getElementById(squareID(square)).querySelectorAll("empty_cell").forEach((button) =>
 			{
 				if(gameInfo[0] !== -2 && (Math.floor(square /9 ) === gameInfo[0] || gameInfo[0] === -1))
 				{
@@ -202,7 +199,7 @@ function removeButtons()
 	for(let board = 0; board < 9; board++)
 	{
 		for(let square = board * 9; (square < (board+1) * 9) && winStatus[board] > 2; square++)
-		document.getElementById(squareID(square)).querySelectorAll("button").forEach((button) =>
+		document.getElementById(squareID(square)).querySelectorAll("empty_cell").forEach((button) =>
 			{
 				
 				button.classList.remove("valid_button");
