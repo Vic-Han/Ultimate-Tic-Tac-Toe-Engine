@@ -144,3 +144,24 @@ body{
         font-size: 30px;
     }
 }
+
+@media (min-width: 1600px){
+    :root{
+        --square_size: 42px; 
+        --main_board_gap: 20px; 
+    }
+    .main_board_component{
+        font-size: 36px;
+    }
+    
+}
+
+@media (min-width: 1920px){
+    :root{
+        --square_size: 48px; 
+        --main_board_gap: 25px; 
+    }
+    .main_board_component{
+        font-size: 40px;
+    }
+}
